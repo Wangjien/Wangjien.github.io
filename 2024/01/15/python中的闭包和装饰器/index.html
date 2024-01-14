@@ -1,0 +1,680 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="python中的闭包和装饰器 title: python中的闭包和装饰器 date: 2024-01-14 16:35:20  tags: - 原创  categories: - python  引入闭包在python的函数中，变量的作用域是有生命周期的，在函数运行完成以后，函数中的变量便会死去。出于种种原因，我们有时候需要在函数外部得到函数内的局部变量。但是，由于Python中作用域的搜索顺序（">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://example.com/2024/01/15/python%E4%B8%AD%E7%9A%84%E9%97%AD%E5%8C%85%E5%92%8C%E8%A3%85%E9%A5%B0%E5%99%A8/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="python中的闭包和装饰器 title: python中的闭包和装饰器 date: 2024-01-14 16:35:20  tags: - 原创  categories: - python  引入闭包在python的函数中，变量的作用域是有生命周期的，在函数运行完成以后，函数中的变量便会死去。出于种种原因，我们有时候需要在函数外部得到函数内的局部变量。但是，由于Python中作用域的搜索顺序（">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s2.loli.net/2024/01/14/hbsoOEzdrnA3B8L.png">
+<meta property="og:image" content="https://s2.loli.net/2024/01/14/5ux7zXi8J3YryVM.png">
+<meta property="og:image" content="https://s2.loli.net/2024/01/14/TWnB7HyDNSwbx3z.png">
+<meta property="og:image" content="https://s2.loli.net/2024/01/14/5mYruainXA9JToO.png">
+<meta property="og:image" content="https://s2.loli.net/2024/01/14/n8bNDrgXOVBf3w4.png">
+<meta property="og:image" content="https://s2.loli.net/2024/01/15/tAdCaV9wOWFHech.png">
+<meta property="og:image" content="https://s2.loli.net/2024/01/15/qs3hUaY89zWLwMc.png">
+<meta property="og:image" content="https://s2.loli.net/2024/01/15/bGMq93h25iLJ6uV.png">
+<meta property="og:image" content="https://s2.loli.net/2024/01/15/XPn89TWm47Cev3b.png">
+<meta property="og:image" content="https://s2.loli.net/2024/01/15/ejLG8qOrfdpsZgR.png">
+<meta property="og:image" content="https://s2.loli.net/2024/01/15/DIHiOhUlbckXSoP.png">
+<meta property="og:image" content="https://s2.loli.net/2024/01/15/Lw9txQuzCXVnbiH.png">
+<meta property="article:published_time" content="2024-01-14T17:33:16.732Z">
+<meta property="article:modified_time" content="2024-01-14T17:33:04.263Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://s2.loli.net/2024/01/14/hbsoOEzdrnA3B8L.png">
+  
+  
+  
+  <title>Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>个人博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text=""></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-01-15 01:33" pubdate>
+          2024年1月15日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          11 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header"></h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="python中的闭包和装饰器"><a href="#python中的闭包和装饰器" class="headerlink" title="python中的闭包和装饰器"></a>python中的闭包和装饰器</h2><hr>
+<p>title: python中的闭包和装饰器</p>
+<p>date: 2024-01-14 16:35:20 </p>
+<p>tags: - 原创 </p>
+<p>categories: - python</p>
+<hr>
+<h3 id="引入闭包"><a href="#引入闭包" class="headerlink" title="引入闭包"></a>引入闭包</h3><p>在python的函数中，变量的作用域是有生命周期的，在函数运行完成以后，函数中的变量便会死去。出于种种原因，我们有时候需要在函数外部得到函数内的局部变量。但是，由于<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/400388568">Python中作用域的搜索顺序</a>（”链式作用域”结构（chain scope）：子对象会一级一级地向上寻找所有父对象的变量），这一点通常是无法实现的。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 函数中的变量的作用域</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">fun1</span>():<br>    n = <span class="hljs-number">1000</span><br><br><span class="hljs-built_in">print</span>(n)<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://s2.loli.net/2024/01/14/hbsoOEzdrnA3B8L.png" srcset="/img/loading.gif" lazyload alt="image-20240114163423406"></p>
+<p>在函数的外部访问函数内部的变量会报错，函数中的变量作用域是局部变量，在全局环境中无法访问。如果想要能够访问函数中的变量，可以在函数中再建立一个函数，然后返回函数中的内部函数，内部函数中再返回函数中的变量，这样就可以访问函数中的变量了。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">fun1</span>():<br>    n = <span class="hljs-number">999</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">fun2</span>():<br>        <span class="hljs-built_in">print</span>(n)<br>    <span class="hljs-keyword">return</span> fun2<br><br>var = fun1()<br>var()<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://s2.loli.net/2024/01/14/5ux7zXi8J3YryVM.png" srcset="/img/loading.gif" lazyload alt="image-20240114164022916"></p>
+<p>从上面的程序中可以看出，外部函数的返回值是一个函数地址，调用函数地址就可以使用返回的函数。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">fun3</span>():<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;hello word&quot;</span>)<br><br><br><span class="hljs-built_in">print</span>(fun3)<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://s2.loli.net/2024/01/14/TWnB7HyDNSwbx3z.png" srcset="/img/loading.gif" lazyload alt="image-20240114164410201"></p>
+<h3 id="闭包的概念"><a href="#闭包的概念" class="headerlink" title="闭包的概念"></a>闭包的概念</h3><p>在一个外函数中定义了一个内函数，内函数里运用了外函数的临时变量，并且外函数的返回值是内函数的引<br>用。这样就构成了一个闭包。</p>
+<p>一般情况下，在我们认知当中，如果一个函数结束，函数的内部所有东西都会释放掉，还给内存，局部变量都会消失。但是闭包是一种特殊情况，如果外函数在结束的时候发现有自己的临时变量将来会在内部函数中用到，就把这个临时变量绑定给了内部函数，然后自己再结束。</p>
+<ul>
+<li>作用1：闭包是将外层函数内的局部变量和外层函数的外部连接起来的一座桥梁。</li>
+<li>作用2：将外层函数的变量持久地保存在内存中。</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">add</span>(<span class="hljs-params">x,y</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">f</span>(<span class="hljs-params">z</span>):<br>        <span class="hljs-keyword">return</span> x+y+z<br>    <span class="hljs-keyword">return</span> f<br><br>d = add(<span class="hljs-number">5</span>,<span class="hljs-number">6</span>)<br><span class="hljs-built_in">print</span>(d(<span class="hljs-number">9</span>))<br><span class="hljs-built_in">print</span>(d(<span class="hljs-number">1</span>))<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://s2.loli.net/2024/01/14/5mYruainXA9JToO.png" srcset="/img/loading.gif" lazyload alt="image-20240114170539463"></p>
+<h3 id="引入装饰器"><a href="#引入装饰器" class="headerlink" title="引入装饰器"></a>引入装饰器</h3><p>实现一个应用，在函数执行之前输出befor，在函数执行之后使用after。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 使用最粗暴的方法</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">func</span>():<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&#x27;before&#x27;</span>)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&#x27;我是func函数&#x27;</span>)<br>    value = [<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,<span class="hljs-number">4</span>,<span class="hljs-number">5</span>]<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;after&quot;</span>)<br>    <span class="hljs-keyword">return</span> value<br><span class="hljs-comment"># 调用func函数</span><br>func()<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://s2.loli.net/2024/01/14/n8bNDrgXOVBf3w4.png" srcset="/img/loading.gif" lazyload alt="image-20240114235427163"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 使用闭包</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">func</span>():<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&#x27;我是func函数&#x27;</span>)<br>    value = [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>]<br>    <span class="hljs-keyword">return</span> value<br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">func1</span>(<span class="hljs-params">f</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">inner_func</span>():<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;before&quot;</span>)<br>        result = f()<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;after&quot;</span>)<br>        <span class="hljs-keyword">return</span> result<br><br>    <span class="hljs-keyword">return</span> inner_func<br><br><br>func2 = func1(func)<br>result = func2()<br><span class="hljs-built_in">print</span>(result)<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://s2.loli.net/2024/01/15/tAdCaV9wOWFHech.png" srcset="/img/loading.gif" lazyload alt="image-20240115000425465"></p>
+<p>上方的func1(func)的结果是获得inner_func的函数地址，result的结果是调用inner_func函数。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">func</span>():<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&#x27;我是func函数&#x27;</span>)<br>    value = [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>]<br>    <span class="hljs-keyword">return</span> value<br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">func1</span>(<span class="hljs-params">f</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">inner_func</span>():<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;inner_func的函数地址<span class="hljs-subst">&#123;inner_func&#125;</span>&quot;</span>)<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;before&quot;</span>)<br>        result = f()<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;after&quot;</span>)<br>        <span class="hljs-keyword">return</span> result<br><br>    <span class="hljs-keyword">return</span> inner_func<br><br><br>func2 = func1(func)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;func2的地址是<span class="hljs-subst">&#123;func2&#125;</span>&quot;</span>)<br>result = func2()<br><span class="hljs-built_in">print</span>(result)<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://s2.loli.net/2024/01/15/qs3hUaY89zWLwMc.png" srcset="/img/loading.gif" lazyload alt="image-20240115003213204"></p>
+<p>在python中可以使用装饰器来简化上方的过程。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">func1</span>(<span class="hljs-params">f</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">inner_func</span>():<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;inner_func的函数地址<span class="hljs-subst">&#123;inner_func&#125;</span>&quot;</span>)<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;before&quot;</span>)<br>        result = f()<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;after&quot;</span>)<br>        <span class="hljs-keyword">return</span> result<br><br>    <span class="hljs-keyword">return</span> inner_func<br><br><br><span class="hljs-meta">@func1</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">func</span>():<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;func函数的地址是<span class="hljs-subst">&#123;func&#125;</span>&quot;</span>)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&#x27;我是func函数&#x27;</span>)<br>    value = [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>]<br>    <span class="hljs-keyword">return</span> value<br><br><br>func()<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://s2.loli.net/2024/01/15/bGMq93h25iLJ6uV.png" srcset="/img/loading.gif" lazyload alt="image-20240115004506286"></p>
+<h3 id="装饰器添加参数"><a href="#装饰器添加参数" class="headerlink" title="装饰器添加参数"></a>装饰器添加参数</h3><p>上面的例子都是无参函数，如果是有参数的函数，上面的程序是否还有正确运行呢？</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">func1</span>(<span class="hljs-params">f</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">inner_func</span>():<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;inner_func的函数地址<span class="hljs-subst">&#123;inner_func&#125;</span>&quot;</span>)<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;before&quot;</span>)<br>        result = f()<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;after&quot;</span>)<br>        <span class="hljs-keyword">return</span> result<br><br>    <span class="hljs-keyword">return</span> inner_func<br><br><br><span class="hljs-meta">@func1</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">func</span>(<span class="hljs-params">a</span>):<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;func函数的地址是<span class="hljs-subst">&#123;func&#125;</span>&quot;</span>)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&#x27;我是func函数&#x27;</span>)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;函数的参数是:<span class="hljs-subst">&#123;a&#125;</span>&quot;</span>)<br>    value = [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>]<br>    <span class="hljs-keyword">return</span> value<br><br><br>func(a=<span class="hljs-number">1</span>)<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://s2.loli.net/2024/01/15/XPn89TWm47Cev3b.png" srcset="/img/loading.gif" lazyload alt="image-20240115004956314"></p>
+<p>在函数中添加*args和**kwargs</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">func1</span>(<span class="hljs-params">f</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">inner_func</span>(<span class="hljs-params">*args, **kwargs</span>):<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;inner_func的函数地址<span class="hljs-subst">&#123;inner_func&#125;</span>&quot;</span>)<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;before&quot;</span>)<br>        result = f(*args, **kwargs)<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;after&quot;</span>)<br>        <span class="hljs-keyword">return</span> result<br><br>    <span class="hljs-keyword">return</span> inner_func<br><br><br><span class="hljs-meta">@func1</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">func</span>(<span class="hljs-params">a</span>):<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;func函数的地址是<span class="hljs-subst">&#123;func&#125;</span>&quot;</span>)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&#x27;我是func函数&#x27;</span>)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;函数的参数是:<span class="hljs-subst">&#123;a&#125;</span>&quot;</span>)<br>    value = [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>]<br>    <span class="hljs-keyword">return</span> value<br><br><br>func(a=<span class="hljs-number">1</span>)<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://s2.loli.net/2024/01/15/ejLG8qOrfdpsZgR.png" srcset="/img/loading.gif" lazyload alt="image-20240115010955515"></p>
+<h3 id="装饰器扩展"><a href="#装饰器扩展" class="headerlink" title="装饰器扩展"></a>装饰器扩展</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">func1</span>(<span class="hljs-params">f</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">inner_func</span>(<span class="hljs-params">*args, **kwargs</span>):<br>        <span class="hljs-string">&quot;&quot;&quot;这是inner_func函数&quot;&quot;&quot;</span><br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;before&quot;</span>)<br>        result = f(*args, **kwargs)<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;after&quot;</span>)<br>        <span class="hljs-keyword">return</span> result<br><br>    <span class="hljs-keyword">return</span> inner_func<br><br><br><span class="hljs-meta">@func1</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">func</span>(<span class="hljs-params">a</span>):<br>    <span class="hljs-string">&quot;&quot;&quot;这是func函数&quot;&quot;&quot;</span><br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&#x27;我是func函数&#x27;</span>)<br>    value = [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>]<br>    <span class="hljs-keyword">return</span> value<br><br><br><span class="hljs-built_in">print</span>(func.__doc__)<br><span class="hljs-built_in">print</span>(func.__name__)<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://s2.loli.net/2024/01/15/DIHiOhUlbckXSoP.png" srcset="/img/loading.gif" lazyload alt="image-20240115011512053"></p>
+<p>在函数中答应文档信息和函数名称，可以很明显的看出当func函数使用装饰器装饰后，文档和函数名均输出为inner_func的函数名和doc文档。这也与上方的闭包符合。如果想打印出func函数的文档信息和函数名称的话，需要使用functiontools函数。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> functools<br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">func1</span>(<span class="hljs-params">f</span>):<br><span class="hljs-meta">    @functools.wraps(<span class="hljs-params">f</span>)</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">inner_func</span>(<span class="hljs-params">*args, **kwargs</span>):<br>        <span class="hljs-string">&quot;&quot;&quot;这是inner_func函数&quot;&quot;&quot;</span><br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;before&quot;</span>)<br>        result = f(*args, **kwargs)<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;after&quot;</span>)<br>        <span class="hljs-keyword">return</span> result<br><br>    <span class="hljs-keyword">return</span> inner_func<br><br><br><span class="hljs-meta">@func1</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">func</span>(<span class="hljs-params">a</span>):<br>    <span class="hljs-string">&quot;&quot;&quot;这是func函数&quot;&quot;&quot;</span><br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&#x27;我是func函数&#x27;</span>)<br>    value = [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>]<br>    <span class="hljs-keyword">return</span> value<br><br><br>func(a=<span class="hljs-number">1</span>)<br><span class="hljs-built_in">print</span>(func.__name__)<br><span class="hljs-built_in">print</span>(func.__doc__)<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://s2.loli.net/2024/01/15/Lw9txQuzCXVnbiH.png" srcset="/img/loading.gif" lazyload alt="image-20240115012317116"></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div></div>
+      <div>http://example.com/2024/01/15/python中的闭包和装饰器/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>John Doe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年1月15日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/01/09/%E6%B5%8B%E8%AF%95%E6%96%87%E7%AB%A0/" title="测试文章">
+                        <span class="hidden-mobile">测试文章</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

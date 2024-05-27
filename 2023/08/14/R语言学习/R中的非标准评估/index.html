@@ -16,13 +16,15 @@
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
   
-    <meta property="og:type" content="article">
+    <meta name="description" content="R中的非标准评估什么是非标准评估非标准评估（Non-standard evaluation，简称NSE）是R语言中的一个重要概念，涉及到如何处理变量、表达式和函数的名称。在标准的编程语言中，通常使用变量的名称来引用和操作变量，但在非标准评估中，变量的名称可能不是直接的字符串，而是以某种形式传递给函数或表达式。 简单的说就是在编写函数的时候，有时候参数的传入是字符串，但是我们在函数体内传入的不是字符">
+<meta property="og:type" content="article">
 <meta property="og:title" content="Hexo">
-<meta property="og:url" content="http://example.com/2024/01/19/python%E4%B8%AD%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A101/index.html">
+<meta property="og:url" content="http://example.com/2023/08/14/R%E8%AF%AD%E8%A8%80%E5%AD%A6%E4%B9%A0/R%E4%B8%AD%E7%9A%84%E9%9D%9E%E6%A0%87%E5%87%86%E8%AF%84%E4%BC%B0/index.html">
 <meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="R中的非标准评估什么是非标准评估非标准评估（Non-standard evaluation，简称NSE）是R语言中的一个重要概念，涉及到如何处理变量、表达式和函数的名称。在标准的编程语言中，通常使用变量的名称来引用和操作变量，但在非标准评估中，变量的名称可能不是直接的字符串，而是以某种形式传递给函数或表达式。 简单的说就是在编写函数的时候，有时候参数的传入是字符串，但是我们在函数体内传入的不是字符">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2024-01-19T08:56:38.991Z">
-<meta property="article:modified_time" content="2024-01-19T16:46:25.711Z">
+<meta property="article:published_time" content="2023-08-14T07:26:36.367Z">
+<meta property="article:modified_time" content="2023-08-14T08:41:10.213Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary_large_image">
   
@@ -205,8 +207,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2024-01-19 16:56" pubdate>
-          2024年1月19日 下午
+        <time datetime="2023-08-14 15:26" pubdate>
+          2023年8月14日 下午
         </time>
       </span>
     
@@ -217,7 +219,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          0 字
+          930 字
         
       </span>
     
@@ -228,7 +230,7 @@
         
         
         
-          1 分钟
+          8 分钟
         
       </span>
     
@@ -270,7 +272,26 @@
             
               <div class="markdown-body">
                 
-                
+                <h1 id="R中的非标准评估"><a href="#R中的非标准评估" class="headerlink" title="R中的非标准评估"></a>R中的非标准评估</h1><h2 id="什么是非标准评估"><a href="#什么是非标准评估" class="headerlink" title="什么是非标准评估"></a>什么是非标准评估</h2><p>非标准评估（Non-standard evaluation，简称NSE）是R语言中的一个重要概念，涉及到如何处理变量、表达式和函数的名称。在标准的编程语言中，通常使用变量的名称来引用和操作变量，但在非标准评估中，变量的名称可能不是直接的字符串，而是以某种形式传递给函数或表达式。<font color="red"> 简单的说就是在编写函数的时候，有时候参数的传入是字符串，但是我们在函数体内传入的不是字符串，此时就需要使用标准评估进项转化。</font></p>
+<p><strong>Tidy Evaluation (Tidy Eval)，不是一个宏包，而是一个非标准评估的框架，也叫延迟评估。主要目的是更方便地与tidyverse里的函数配合使用，事实上，很多时候我们不一定需要用到它</strong></p>
+<ol>
+<li>**enquo()**：<code>enquo</code> 是 “enquoting” 的缩写，用于创建一个引用（quosure）对象，将变量捕捉到一个对象中，以便在非标准评估环境中使用。它可以用来保存传递给函数的参数，并在函数内部使用。</li>
+<li>**!!**（bang-bang）：<code>!!</code> 运算符，也叫 “unquote-splice” 运算符，用于将一个引用（quosure）解引用，使其成为正常的R表达式。它在函数内部用于执行非标准评估，将引用的值插入到表达式中。</li>
+<li>**!!!**（triple-bang）：<code>!!!</code> 运算符，也叫 “unquote-splice” 运算符，用于将引用列表（list of quosures）解引用并展开成单个表达式。它允许您将多个引用嵌入到表达式中，以进行多个非标准评估操作。</li>
+<li>**sym()**：<code>sym</code> 函数用于将字符转换为符号（symbol）。符号是一个表示R语言变量名的对象，可以在非标准评估环境中使用。</li>
+<li>**syms()**：<code>syms</code> 函数用于将多个字符转换为一组符号。这在需要处理多个变量名时很有用，例如在循环中构建非标准评估的表达式</li>
+</ol>
+<h2 id="enquo"><a href="#enquo" class="headerlink" title="enquo()"></a>enquo()</h2><p>enquo是rlang包中用于非标准评估的函数之一，用于将变量捕获为引用对象(quosure)，以便在函数内部使用。</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs R">library<span class="hljs-punctuation">(</span>dplyr<span class="hljs-punctuation">)</span><br>library<span class="hljs-punctuation">(</span>rlang<span class="hljs-punctuation">)</span><br><br>data <span class="hljs-operator">&lt;-</span> data.frame<span class="hljs-punctuation">(</span>value <span class="hljs-operator">=</span> <span class="hljs-built_in">c</span><span class="hljs-punctuation">(</span><span class="hljs-number">10</span><span class="hljs-punctuation">,</span> <span class="hljs-number">15</span><span class="hljs-punctuation">,</span> <span class="hljs-number">20</span><span class="hljs-punctuation">,</span> <span class="hljs-number">25</span><span class="hljs-punctuation">,</span> <span class="hljs-number">30</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">)</span><br><br>calculate_mean <span class="hljs-operator">&lt;-</span> <span class="hljs-keyword">function</span><span class="hljs-punctuation">(</span>data<span class="hljs-punctuation">,</span> column<span class="hljs-punctuation">)</span> <span class="hljs-punctuation">&#123;</span><br>  column_quo <span class="hljs-operator">&lt;-</span> enquo<span class="hljs-punctuation">(</span>column<span class="hljs-punctuation">)</span>  <span class="hljs-comment"># 捕获变量为引用对象</span><br>  <br>  mean_value <span class="hljs-operator">&lt;-</span> data <span class="hljs-operator">%&gt;%</span><br>    summarise<span class="hljs-punctuation">(</span>mean_value <span class="hljs-operator">=</span> mean<span class="hljs-punctuation">(</span><span class="hljs-operator">!</span><span class="hljs-operator">!</span>column_quo<span class="hljs-punctuation">)</span><span class="hljs-punctuation">)</span>  <span class="hljs-comment"># 使用 !! 解引用引用对象</span><br>  <br>  <span class="hljs-built_in">return</span><span class="hljs-punctuation">(</span>mean_value<span class="hljs-punctuation">)</span><br><span class="hljs-punctuation">&#125;</span><br><br>result <span class="hljs-operator">&lt;-</span> calculate_mean<span class="hljs-punctuation">(</span>data<span class="hljs-punctuation">,</span> column <span class="hljs-operator">=</span> value<span class="hljs-punctuation">)</span><br>print<span class="hljs-punctuation">(</span>result<span class="hljs-operator">$</span>mean_value<span class="hljs-punctuation">)</span><br><br><span class="hljs-comment"># 输出20</span><br></code></pre></td></tr></table></figure>
+
+<p>在R中，<code>!!</code>（双感叹号）是 <code>rlang</code> 包中用于非标准评估（Non-Standard Evaluation，NSE）的一个关键运算符，它用于解引用引用（quosure）对象，将其嵌入到表达式中。在非标准评估环境中，<code>!!</code> 通常与 <code>enquo()</code> 函数一起使用，以便在函数内部引用外部变量。</p>
+<p><font color="green">在上面的函数中value是环境变量名称没如果需要需要将value当中data数据框中的一列进行应用，需要对数据进行应用（quote）和解引用（unqote）两步</font></p>
+<ul>
+<li>第一步，用 <code>enquo()</code>把用户传递过来的参数引用起来（<strong>引用</strong>可以理解为<strong>冷冻</strong>起来）</li>
+<li>第二步，用 <code>!!</code> 解开这个引用（<strong>解引用</strong>可以理解为<strong>解冷</strong>），然后使用参数的内容</li>
+</ul>
+<p>这个<code>quote-unquote</code>的过程让环境变量名变成了数据变量，也可以理解为在函数评估过程中，数据变量（data-variable）遮盖了环境变量（env-variable），即数据遮盖（data masking），看到value，正常情况下，本来应该是到环境变量里去找这个valuel对应的值，然而，数据遮盖机制，插队了，让代码去数据变量中去找valuel以及对应的值。</p>
+
                 
               </div>
             
@@ -288,7 +309,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div></div>
-      <div>http://example.com/2024/01/19/python中面向对象01/</div>
+      <div>http://example.com/2023/08/14/R语言学习/R中的非标准评估/</div>
     </div>
     <div class="license-meta">
       
@@ -300,7 +321,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2024年1月19日</div>
+          <div>2023年8月14日</div>
         </div>
       
       
@@ -332,7 +353,7 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2024/05/26/R%E7%BB%98%E5%9B%BE%E7%B3%BB%E7%BB%9F/" title="">
+                      <a href="/2023/09/03/R%E8%AF%AD%E8%A8%80%E5%AD%A6%E4%B9%A0/R%E8%AF%AD%E8%A8%80%E4%B8%AD%E9%94%AE%E7%9B%98%E5%92%8C%E9%BC%A0%E6%A0%87%E4%BA%8B%E4%BB%B6/" title="">
                         <i class="iconfont icon-arrowleft"></i>
                         <span class="hidden-mobile"></span>
                         <span class="visible-mobile">上一篇</span>
@@ -341,12 +362,6 @@
                   </article>
                   <article class="post-next col-6">
                     
-                    
-                      <a href="/2024/01/15/python%E4%B8%AD%E7%9A%84%E9%97%AD%E5%8C%85%E5%92%8C%E8%A3%85%E9%A5%B0%E5%99%A8/" title="">
-                        <span class="hidden-mobile"></span>
-                        <span class="visible-mobile">下一篇</span>
-                        <i class="iconfont icon-arrowright"></i>
-                      </a>
                     
                   </article>
                 </div>

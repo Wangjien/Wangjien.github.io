@@ -26,7 +26,7 @@
 <meta property="og:image" content="https://markdown.liuchengtu.com/work/uploads/upload_7e6e15147615be8ad58ad89c4832eed7.png">
 <meta property="og:image" content="https://markdown.liuchengtu.com/work/uploads/upload_5c1b201761e8c82fe835360c8adf717e.png">
 <meta property="article:published_time" content="2024-06-02T02:32:47.000Z">
-<meta property="article:modified_time" content="2024-06-02T10:39:44.508Z">
+<meta property="article:modified_time" content="2024-06-02T10:59:31.373Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="python">
 <meta name="twitter:card" content="summary_large_image">
@@ -223,7 +223,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.7k 字
+          2k 字
         
       </span>
     
@@ -234,7 +234,7 @@
         
         
         
-          14 分钟
+          18 分钟
         
       </span>
     
@@ -363,7 +363,24 @@
 
 <h4 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h4><ul>
 <li>一个类中只能写一个构造方法，即便写多个，也只有最后一个起作用。</li>
+<li>python可以动态的生成对象属性</li>
 </ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Person</span>:<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self,name,age</span>):<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&#x27;__init__执行了,<span class="hljs-subst">&#123;name&#125;</span>,<span class="hljs-subst">&#123;age&#125;</span>&#x27;</span>)<br>       	slef.name = name<br>        self.age = age<br>p1 = Person(name=<span class="hljs-string">&quot;xiao&quot;</span>,age=<span class="hljs-number">13</span>)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;p1的name<span class="hljs-subst">&#123;p1.name&#125;</span>,p1的age<span class="hljs-subst">&#123;p1.age&#125;</span>&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<h3 id="封装"><a href="#封装" class="headerlink" title="封装"></a>封装</h3><p>面相对象编程的三大特征：封装，继承，多态。</p>
+<h4 id="封装的优点："><a href="#封装的优点：" class="headerlink" title="封装的优点："></a><strong>封装的优点：</strong></h4><p>【1】隐藏实现的细节</p>
+<p>【2】可以对数据进行验证（例如密码），保证合理性</p>
+<p>【3】隐私数据需要授权后才能访问</p>
+<h4 id="私有变量"><a href="#私有变量" class="headerlink" title="私有变量"></a>私有变量</h4><p>类中的变量或者方法是以双下滑线开头命名，则该变量或者方法是私有的，私有的变量或者方法只能在本类中使用，类的外部无法使用。</p>
+<p>并不代表是有变量就不能访问，入下例子，可以通过其他方式访问到私有变量或者方法。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Person</span>: <br>    __salary = <span class="hljs-number">3000</span> <span class="hljs-comment"># 定义了一个私有变量</span><br><br><br>p1 = Person()<br><span class="hljs-built_in">print</span>(<span class="hljs-built_in">dir</span>(p1))<br><span class="hljs-comment">#[&#x27;_Person__salary&#x27;, &#x27;__class__&#x27;, &#x27;__delattr__&#x27;, &#x27;__dict__&#x27;, &#x27;__dir__&#x27;, &#x27;__doc__&#x27;, &#x27;__eq__&#x27;, &#x27;__format__&#x27;, &#x27;__ge__&#x27;, &#x27;__getattribute__&#x27;, &#x27;__getstate__&#x27;, &#x27;__gt__&#x27;, &#x27;__hash__&#x27;, &#x27;__init__&#x27;, &#x27;__init_subclass__&#x27;, &#x27;__le__&#x27;, &#x27;__lt__&#x27;, &#x27;__module__&#x27;, &#x27;__ne__&#x27;, &#x27;__new__&#x27;, &#x27;__reduce__&#x27;, &#x27;__reduce_ex__&#x27;, &#x27;__repr__&#x27;, &#x27;__setattr__&#x27;, &#x27;__sizeof__&#x27;, &#x27;__str__&#x27;, &#x27;__subclasshook__&#x27;, &#x27;__weakref__&#x27;]</span><br><br><span class="hljs-built_in">print</span>(p1._Person__salary) <span class="hljs-comment"># 3000 </span><br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>问题提出：</p>
+<p>【1】创建职员类（Clerk）,属性有name,job,salary</p>
+<p>【2】不能随便的查看职员的职位和工资等隐私，比如职员(“tiger”,”Python工程师”，20000)</p>
+<p>【3】提供公共的方法，可以对职位和工资进行操作</p>
+</blockquote>
 
                 
               </div>

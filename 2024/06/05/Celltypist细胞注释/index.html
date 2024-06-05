@@ -1,0 +1,644 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="运行celltypeist进行细胞注释  参考地址:https:&#x2F;&#x2F;www.celltypist.org&#x2F;tutorials  应该选择哪种参考数据集？  Cells_Fetal_Lung.pkl，人类胚胎和胎儿肺的146种细胞类型； Cells_Intestinal_Tract.pkl，来自胎儿、儿童和成人肠道的134种肠道细胞类型； Cells_Lung_Airway.pkl，来自人类肺部和呼">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Celltypist细胞注释">
+<meta property="og:url" content="http://example.com/2024/06/05/Celltypist%E7%BB%86%E8%83%9E%E6%B3%A8%E9%87%8A/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="运行celltypeist进行细胞注释  参考地址:https:&#x2F;&#x2F;www.celltypist.org&#x2F;tutorials  应该选择哪种参考数据集？  Cells_Fetal_Lung.pkl，人类胚胎和胎儿肺的146种细胞类型； Cells_Intestinal_Tract.pkl，来自胎儿、儿童和成人肠道的134种肠道细胞类型； Cells_Lung_Airway.pkl，来自人类肺部和呼">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-06-05T07:53:04.000Z">
+<meta property="article:modified_time" content="2024-06-05T07:54:48.815Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="scRNA">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>Celltypist细胞注释 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>个人博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Celltypist细胞注释"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-06-05 15:53" pubdate>
+          2024年6月5日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          9 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Celltypist细胞注释</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>运行celltypeist进行细胞注释</p>
+<blockquote>
+<p>参考地址:<a target="_blank" rel="noopener" href="https://www.celltypist.org/tutorials">https://www.celltypist.org/tutorials</a></p>
+</blockquote>
+<p><strong>应该选择哪种参考数据集？</strong></p>
+<ul>
+<li>Cells_Fetal_Lung.pkl，人类胚胎和胎儿肺的146种细胞类型；</li>
+<li>Cells_Intestinal_Tract.pkl，来自胎儿、儿童和成人肠道的134种肠道细胞类型；</li>
+<li>Cells_Lung_Airway.pkl，来自人类肺部和呼吸道五个位置的scRNA的78种细胞群；</li>
+<li>COVID19_Immune_Landscape.pkl，从COVID-19患者和健康对照者的肺和血液中提取的64种免疫亚型；</li>
+<li>Developing_Mouse_Brain.pkl，从原肠形成到出生的小鼠胚胎大脑的174种细胞类型；</li>
+<li>Healthy_COVID19_PBMC.pkl，健康和COVID-19个体的外周血51种单核细胞类型；</li>
+<li>Human_Lung_Atlas.pkl，整合了46个人类呼吸系统数据集的人类肺细胞图谱（HLCA），共计58种细胞类型；</li>
+<li>Immune_All_AddPIP.pkl，来自人的大于20个组织的免疫细胞类型(Immune_All_Low + Immune_All_PIP)；</li>
+<li>mmune_All_High.pkl，来自19项研究的20个组织中的32个免疫细胞亚群；</li>
+<li>Immune_All_Low.pkl，来自19项研究的20个组织中的90个免疫细胞亚群；</li>
+<li>Immune_All_PIP.pkl，来自16个成人组织的41种免疫细胞类型；</li>
+<li>Nuclei_Lung_Airway.pkl，来自人类肺和呼吸道五个位置的78个亚群</li>
+<li>Pan_Fetal_Human.pkl，来自人类胎儿的138个基质和免疫亚群。</li>
+</ul>
+<p>例如，对于用户需要注释免疫细胞类型，官网建议从“Immune_All_Low&#x2F;High”模型开始，因为它们包含从不同组织收集的免疫细胞类型。“Low”表示低层次(高分辨率)细胞类型和子类型，“High”表示高层次(低分辨率)细胞类型。用户也可以尝试免疫细胞类型的扩展参考模型(“Immune_All_AddPIP”)。</p>
+<p><font color="red">参考数据集下载链接 </font></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">#</span><span class="language-bash"><span class="hljs-comment"># Human</span></span><br>https://celltypist.cog.sanger.ac.uk/models/Autopsy_COVID19_Delorey/v1/Autopsy_COVID19_Lung.pkl<br>https://celltypist.cog.sanger.ac.uk/models/Fetal_Lung_He/v2/Cells_Fetal_Lung.pkl<br>https://celltypist.cog.sanger.ac.uk/models/Intestinal_Tract_Elmentaite/v1/Cells_Intestinal_Tract.pkl<br>https://celltypist.cog.sanger.ac.uk/models/Lung_Airway_Madissoon/v4/Cells_Lung_Airway.pkl<br>https://celltypist.cog.sanger.ac.uk/models/COVID19_HumanBlood_Dratva/v1/COVID19_HumanChallenge_Blood.pkl<br>https://celltypist.cog.sanger.ac.uk/models/COVID19_Immune_Ren/v1/COVID19_Immune_Landscape.pkl<br>https://celltypist.cog.sanger.ac.uk/models/Human_Devbrain_Braun/v1/Developing_Human_Brain.pkl<br>https://celltypist.cog.sanger.ac.uk/models/Human_Thymus_Park/v1/Developing_Human_Thymus.pkl<br>https://celltypist.cog.sanger.ac.uk/models/COVID19_PBMC_Haniffa/v1/Healthy_COVID19_PBMC.pkl<br>https://celltypist.cog.sanger.ac.uk/models/IPF_HumanLung_Adams/v1/Human_IPF_Lung.pkl<br>https://celltypist.cog.sanger.ac.uk/models/Human_Lung_Sikkema/v2/Human_Lung_Atlas.pkl<br>https://celltypist.cog.sanger.ac.uk/models/PF_HumanLung_Habermann/v1/Human_PF_Lung.pkl<br>https://celltypist.cog.sanger.ac.uk/models/Pan_Immune_CellTypist/v2/Immune_All_Low.pkl<br>https://celltypist.cog.sanger.ac.uk/models/Pan_Immune_CellTypist/v2/Immune_All_High.pkl<br>https://celltypist.cog.sanger.ac.uk/models/Lethal_COVID19_Melms/v1/Lethal_COVID19_Lung.pkl<br>https://celltypist.cog.sanger.ac.uk/models/Lung_Airway_Madissoon/v4/Nuclei_Lung_Airway.pkl<br>https://celltypist.cog.sanger.ac.uk/models/Pan_Fetal_Suo/v2/Pan_Fetal_Human.pkl<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash"><span class="hljs-comment"># Mouse</span></span><br>https://celltypist.cog.sanger.ac.uk/models/Mouse_Gut_Casado/v2/Adult_Mouse_Gut.pkl<br>https://celltypist.cog.sanger.ac.uk/models/Human_Thymus_Park/v1/Developing_Human_Thymus.pkl<br></code></pre></td></tr></table></figure>
+
+<h3 id="运行代码"><a href="#运行代码" class="headerlink" title="运行代码"></a>运行代码</h3><figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br></pre></td><td class="code"><pre><code class="hljs R">message<span class="hljs-punctuation">(</span>paste0<span class="hljs-punctuation">(</span><span class="hljs-string">&#x27;[&#x27;</span><span class="hljs-punctuation">,</span>Sys.time<span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">,</span><span class="hljs-string">&#x27;]&#x27;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&#x27;运行celltypist......&#x27;</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">)</span><br>suppressPackageStartupMessages<span class="hljs-punctuation">(</span><span class="hljs-punctuation">&#123;</span><br>    library<span class="hljs-punctuation">(</span>Seurat<span class="hljs-punctuation">)</span><br>    library<span class="hljs-punctuation">(</span>ggplot2<span class="hljs-punctuation">)</span><br>    library<span class="hljs-punctuation">(</span>patchwork<span class="hljs-punctuation">)</span><br>    library<span class="hljs-punctuation">(</span>dplyr<span class="hljs-punctuation">)</span><br>    library<span class="hljs-punctuation">(</span>stringr<span class="hljs-punctuation">)</span><br>    library<span class="hljs-punctuation">(</span>readr<span class="hljs-punctuation">)</span><br>    library<span class="hljs-punctuation">(</span>reticulate<span class="hljs-punctuation">)</span> <span class="hljs-comment"># 可以使R和python联通的R包</span><br>    library<span class="hljs-punctuation">(</span>progress<span class="hljs-punctuation">)</span> <span class="hljs-comment"># 打印进度条</span><br>    library<span class="hljs-punctuation">(</span>qs<span class="hljs-punctuation">)</span><br><span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">)</span><br><span class="hljs-comment"># 导入python包</span><br>scanpy <span class="hljs-operator">=</span> import<span class="hljs-punctuation">(</span><span class="hljs-string">&quot;scanpy&quot;</span><span class="hljs-punctuation">)</span><br>celltypist <span class="hljs-operator">=</span> import<span class="hljs-punctuation">(</span><span class="hljs-string">&quot;celltypist&quot;</span><span class="hljs-punctuation">)</span><br>pandas <span class="hljs-operator">&lt;-</span> import<span class="hljs-punctuation">(</span><span class="hljs-string">&quot;pandas&quot;</span><span class="hljs-punctuation">)</span><br>numpy <span class="hljs-operator">=</span> import<span class="hljs-punctuation">(</span><span class="hljs-string">&quot;numpy&quot;</span><span class="hljs-punctuation">)</span><br><br>Ref_path <span class="hljs-operator">&lt;-</span> <span class="hljs-string">&quot;/root/wangje/Reference/cellTypist_Ref/Human/&quot;</span> <span class="hljs-comment"># 参考数据集位置</span><br><span class="hljs-comment"># Test_path &lt;- &quot;/root/wangje/Project/OveryArtical/001_大群Harmony.qs&quot; # 需要被注释的数据集</span><br>file_prefix <span class="hljs-operator">=</span> <span class="hljs-string">&quot;HarmonyResult_&quot;</span> <span class="hljs-comment"># 输出文件前缀</span><br><br>message<span class="hljs-punctuation">(</span>paste0<span class="hljs-punctuation">(</span><span class="hljs-string">&#x27;[&#x27;</span><span class="hljs-punctuation">,</span>Sys.time<span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">,</span><span class="hljs-string">&#x27;]&#x27;</span><span class="hljs-punctuation">,</span><span class="hljs-string">&#x27;加载参考数据集&#x27;</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">)</span><br>model_type <span class="hljs-operator">&lt;-</span> list.files<span class="hljs-punctuation">(</span>Ref_path<span class="hljs-punctuation">,</span>pattern <span class="hljs-operator">=</span> <span class="hljs-string">&quot;pkl$&quot;</span><span class="hljs-punctuation">)</span><br>pb <span class="hljs-operator">&lt;-</span> progress_bar<span class="hljs-operator">$</span>new<span class="hljs-punctuation">(</span><br>    format <span class="hljs-operator">=</span> <span class="hljs-string">&quot;  Loading [:bar] :percent eta: :eta&quot;</span><span class="hljs-punctuation">,</span><br>    total <span class="hljs-operator">=</span> <span class="hljs-built_in">length</span><span class="hljs-punctuation">(</span>model_type<span class="hljs-punctuation">)</span><span class="hljs-punctuation">,</span>clear <span class="hljs-operator">=</span> <span class="hljs-literal">FALSE</span><span class="hljs-punctuation">,</span> width<span class="hljs-operator">=</span> <span class="hljs-number">60</span><span class="hljs-punctuation">)</span><br><span class="hljs-built_in">names</span><span class="hljs-punctuation">(</span>model_type<span class="hljs-punctuation">)</span> <span class="hljs-operator">=</span> str_split<span class="hljs-punctuation">(</span>string <span class="hljs-operator">=</span> model_type<span class="hljs-punctuation">,</span>pattern <span class="hljs-operator">=</span> <span class="hljs-string">&quot;\\.&quot;</span><span class="hljs-punctuation">,</span> simplify <span class="hljs-operator">=</span> <span class="hljs-built_in">T</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">[</span><span class="hljs-punctuation">,</span><span class="hljs-number">1</span><span class="hljs-punctuation">]</span><br>model_list <span class="hljs-operator">=</span> lapply<span class="hljs-punctuation">(</span>model_type<span class="hljs-punctuation">,</span> <span class="hljs-keyword">function</span><span class="hljs-punctuation">(</span>x<span class="hljs-punctuation">)</span><span class="hljs-punctuation">&#123;</span><br>    pb<span class="hljs-operator">$</span>tick<span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span><br>    result <span class="hljs-operator">&lt;-</span> celltypist<span class="hljs-operator">$</span>models<span class="hljs-operator">$</span>Model<span class="hljs-operator">$</span>load<span class="hljs-punctuation">(</span>model <span class="hljs-operator">=</span> file.path<span class="hljs-punctuation">(</span>Ref_path<span class="hljs-punctuation">,</span>x<span class="hljs-punctuation">)</span><span class="hljs-punctuation">)</span><br>    Sys.sleep<span class="hljs-punctuation">(</span><span class="hljs-number">1</span><span class="hljs-operator">/</span><span class="hljs-built_in">length</span><span class="hljs-punctuation">(</span>model_type<span class="hljs-punctuation">)</span><span class="hljs-punctuation">)</span><br>    result<br>    <span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">)</span><br><br><span class="hljs-comment"># 查看加载的数据集</span><br>print<span class="hljs-punctuation">(</span>model_list<span class="hljs-punctuation">)</span><br><br><span class="hljs-comment"># 读入测试数据</span><br>message<span class="hljs-punctuation">(</span>paste0<span class="hljs-punctuation">(</span><span class="hljs-string">&#x27;[&#x27;</span><span class="hljs-punctuation">,</span>Sys.time<span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">,</span><span class="hljs-string">&#x27;]&#x27;</span><span class="hljs-punctuation">,</span><span class="hljs-string">&#x27;读入测试数据集，并转换成Annadata对象&#x27;</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">)</span><br>scRNA <span class="hljs-operator">&lt;-</span> qs<span class="hljs-operator">::</span>qread<span class="hljs-punctuation">(</span><span class="hljs-string">&#x27;/root/wangje/Project/OveryArtical/001_大群Harmony.qs&#x27;</span><span class="hljs-punctuation">)</span><br>adata <span class="hljs-operator">=</span> scanpy<span class="hljs-operator">$</span>AnnData<span class="hljs-punctuation">(</span><br>    X <span class="hljs-operator">=</span> numpy<span class="hljs-operator">$</span>array<span class="hljs-punctuation">(</span>as.matrix<span class="hljs-punctuation">(</span>t<span class="hljs-punctuation">(</span>as.matrix<span class="hljs-punctuation">(</span>scRNA<span class="hljs-punctuation">[[</span><span class="hljs-string">&#x27;RNA&#x27;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">]</span><span class="hljs-operator">@</span>counts<span class="hljs-punctuation">)</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">,</span><br>    obs <span class="hljs-operator">=</span> pandas<span class="hljs-operator">$</span>DataFrame<span class="hljs-punctuation">(</span>scRNA<span class="hljs-operator">@</span>meta.data<span class="hljs-punctuation">)</span><span class="hljs-punctuation">,</span><br>    var <span class="hljs-operator">=</span> pandas<span class="hljs-operator">$</span>DataFrame<span class="hljs-punctuation">(</span>data.frame<span class="hljs-punctuation">(</span>gene <span class="hljs-operator">=</span> rownames<span class="hljs-punctuation">(</span>scRNA<span class="hljs-punctuation">[[</span><span class="hljs-string">&#x27;RNA&#x27;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">]</span><span class="hljs-operator">@</span>counts<span class="hljs-punctuation">)</span><span class="hljs-punctuation">,</span><br>    row.names <span class="hljs-operator">=</span> rownames<span class="hljs-punctuation">(</span>scRNA<span class="hljs-punctuation">[[</span><span class="hljs-string">&#x27;RNA&#x27;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">]</span><span class="hljs-operator">@</span>counts<span class="hljs-punctuation">)</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">)</span><br><span class="hljs-punctuation">)</span><br><span class="hljs-comment"># 预处理</span><br>scanpy<span class="hljs-operator">$</span>pp<span class="hljs-operator">$</span>normalize_total<span class="hljs-punctuation">(</span>adata<span class="hljs-punctuation">,</span> target_sum<span class="hljs-operator">=</span><span class="hljs-number">1e4</span><span class="hljs-punctuation">)</span><br>scanpy<span class="hljs-operator">$</span>pp<span class="hljs-operator">$</span>log1p<span class="hljs-punctuation">(</span>adata<span class="hljs-punctuation">)</span><br>adata <br><br><span class="hljs-comment"># celltype自动注释</span><br>celltypist_vis <span class="hljs-operator">=</span> <span class="hljs-keyword">function</span><span class="hljs-punctuation">(</span><br>        adata<span class="hljs-punctuation">,</span><br>        seurat_Data<span class="hljs-punctuation">,</span><br>        reduction <span class="hljs-operator">=</span> <span class="hljs-string">&quot;umap&quot;</span><span class="hljs-punctuation">,</span><br>        model <span class="hljs-operator">=</span> Immune_All_Low.pkl<span class="hljs-punctuation">,</span><br>        title <span class="hljs-operator">=</span> <span class="hljs-string">&quot;Immune_All_Low&quot;</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">&#123;</span><br>    predictions <span class="hljs-operator">=</span> celltypist<span class="hljs-operator">$</span>annotate<span class="hljs-punctuation">(</span>adata<span class="hljs-punctuation">,</span> model <span class="hljs-operator">=</span> model<span class="hljs-punctuation">,</span> majority_voting <span class="hljs-operator">=</span> <span class="hljs-built_in">T</span><span class="hljs-punctuation">)</span><br>    seurat_Data  <span class="hljs-operator">=</span> AddMetaData<span class="hljs-punctuation">(</span>seurat_Data <span class="hljs-punctuation">,</span> predictions<span class="hljs-operator">$</span>predicted_labels<span class="hljs-punctuation">)</span> <br>    seurat_Data  <span class="hljs-operator">=</span> SetIdent<span class="hljs-punctuation">(</span>seurat_Data <span class="hljs-punctuation">,</span> value <span class="hljs-operator">=</span> <span class="hljs-string">&quot;majority_voting&quot;</span><span class="hljs-punctuation">)</span><br>    p.umap <span class="hljs-operator">=</span> DimPlot<span class="hljs-punctuation">(</span>seurat_Data<span class="hljs-punctuation">,</span> reduction <span class="hljs-operator">=</span> reduction<span class="hljs-punctuation">,</span> label <span class="hljs-operator">=</span> <span class="hljs-literal">TRUE</span><span class="hljs-punctuation">,</span>raster <span class="hljs-operator">=</span> <span class="hljs-literal">TRUE</span><span class="hljs-punctuation">,</span> pt.size <span class="hljs-operator">=</span> <span class="hljs-number">0.5</span><span class="hljs-punctuation">,</span>label.box <span class="hljs-operator">=</span> <span class="hljs-built_in">F</span><span class="hljs-punctuation">,</span>repel <span class="hljs-operator">=</span> <span class="hljs-built_in">T</span><span class="hljs-punctuation">)</span> <span class="hljs-operator">+</span> ggtitle<span class="hljs-punctuation">(</span>title<span class="hljs-punctuation">)</span><br>    <span class="hljs-built_in">return</span><span class="hljs-punctuation">(</span>p.umap<span class="hljs-punctuation">)</span><br><span class="hljs-punctuation">&#125;</span><br><br><span class="hljs-comment"># 批量注释</span><br>pb <span class="hljs-operator">&lt;-</span> progress_bar<span class="hljs-operator">$</span>new<span class="hljs-punctuation">(</span><br>    format <span class="hljs-operator">=</span> <span class="hljs-string">&quot;  Loading [:bar] :percent eta: :eta&quot;</span><span class="hljs-punctuation">,</span><br>    total <span class="hljs-operator">=</span> <span class="hljs-built_in">length</span><span class="hljs-punctuation">(</span>model_list<span class="hljs-punctuation">)</span><span class="hljs-punctuation">,</span>clear <span class="hljs-operator">=</span> <span class="hljs-literal">FALSE</span><span class="hljs-punctuation">,</span> width<span class="hljs-operator">=</span> <span class="hljs-number">60</span><span class="hljs-punctuation">)</span><br><br>plotlist <span class="hljs-operator">&lt;-</span> setNames<span class="hljs-punctuation">(</span>lapply<span class="hljs-punctuation">(</span><span class="hljs-number">1</span><span class="hljs-operator">:</span><span class="hljs-built_in">length</span><span class="hljs-punctuation">(</span>model_list<span class="hljs-punctuation">)</span><span class="hljs-punctuation">,</span>FUN <span class="hljs-operator">=</span> <span class="hljs-keyword">function</span><span class="hljs-punctuation">(</span>x<span class="hljs-punctuation">)</span><span class="hljs-punctuation">&#123;</span><br>    print<span class="hljs-punctuation">(</span><span class="hljs-built_in">names</span><span class="hljs-punctuation">(</span>model_list<span class="hljs-punctuation">[</span>i<span class="hljs-punctuation">]</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">)</span><br>    celltypist_vis<span class="hljs-punctuation">(</span>adata <span class="hljs-operator">=</span> adata<span class="hljs-punctuation">,</span><br>    seurat_Data <span class="hljs-operator">=</span> scRNA<span class="hljs-punctuation">,</span><br>    model <span class="hljs-operator">=</span> model_list<span class="hljs-punctuation">[[</span>i<span class="hljs-punctuation">]</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span><br>    title <span class="hljs-operator">=</span> <span class="hljs-built_in">names</span><span class="hljs-punctuation">(</span>model_list<span class="hljs-punctuation">[</span>i<span class="hljs-punctuation">]</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">)</span> <br><span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">,</span><span class="hljs-built_in">names</span><span class="hljs-punctuation">(</span>model_list<span class="hljs-punctuation">)</span><span class="hljs-punctuation">)</span><br><br><span class="hljs-comment">## 保存文件</span><br><span class="hljs-keyword">for</span><span class="hljs-punctuation">(</span>i <span class="hljs-keyword">in</span> <span class="hljs-built_in">names</span><span class="hljs-punctuation">(</span>plotlist<span class="hljs-punctuation">)</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">&#123;</span><br>    ggsave<span class="hljs-punctuation">(</span>filename <span class="hljs-operator">=</span> paste0<span class="hljs-punctuation">(</span>i<span class="hljs-punctuation">,</span><span class="hljs-string">&#x27;_celltypistAnno.png&#x27;</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">,</span>height <span class="hljs-operator">=</span> <span class="hljs-number">4</span><span class="hljs-punctuation">,</span>width <span class="hljs-operator">=</span> <span class="hljs-number">16</span><span class="hljs-punctuation">,</span> plot <span class="hljs-operator">=</span> plotlist<span class="hljs-punctuation">[[</span>i<span class="hljs-punctuation">]</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>bg <span class="hljs-operator">=</span> <span class="hljs-string">&quot;white&quot;</span><span class="hljs-punctuation">)</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/scRNA/" class="print-no-link">#scRNA</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Celltypist细胞注释</div>
+      <div>http://example.com/2024/06/05/Celltypist细胞注释/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>John Doe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年6月5日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/06/05/%E8%B5%B5%E8%80%81%E5%B8%88%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" title="赵老师数据分析">
+                        <span class="hidden-mobile">赵老师数据分析</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
